@@ -15,12 +15,17 @@ if __name__ == '__main__':
 
 class net():
     User_Agent_360jisu = r"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36"
+    User_Agent_FireFox = r"Mozilla/5.0 (Windows NT 6.3; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0"
+    User_Agent_IE11 = r"Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko"
+    User_Agent_Baidu = r"Baiduspider"
+    User_Agent_Google = r"Googlebot"
+    User_Agent_Chrome = r"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1653.0 Safari/537.36"
 
-    def __init__(self, Cookie="", User_Agent=User_Agent_360jisu, ):
+    def __init__(self, Cookie="", User_Agent=User_Agent_Chrome, headers={}):
         self.opener = urllib2.build_opener()
         self.cj = cookielib.CookieJar()
         self.cookie = Cookie
-        self.header = {}
+        self.header = headers
         self.User_Agent = User_Agent
         if Cookie != "":
             self.header['cookie'] = Cookie
@@ -29,13 +34,23 @@ class net():
     def __setUser_Agent(self, req, cont):
         req.add_header("User_Agent", cont)
 
-    def setHeader(self, header):
-        self.header = header
+    def setHeaders(self, headers):
+        self.header = headers
 
-    def __addHeaders(self, req, header):
-        for key in header:
-            req.add_header(key, header[key])
+    def setHeaders_fromStr(self, string):
+        row = string.split('\n')
+        for li in row:
+            it = li.split(':')
+            self.header[it[0]] = ''.join(it[1:])
 
+
+    def setHeaders_fromFile(self, path):
+        string = self.__readFromFile(path)
+        self.setHeaders_fromStr(string)
+
+    def setCookie_fromFile(self, path):
+        string = self.__readFromFile(path)
+        self.cookie = string
 
     def Get(self, url, data={}, cookie=True, ):
         if cookie:
@@ -67,3 +82,20 @@ class net():
 
         return res.read()
 
+    def __readFromFile(self, path):
+        fin = open(path)
+        return fin.read()
+
+    def __addHeaders(self, req, header):
+        for key in header:
+            req.add_header(key, header[key])
+
+
+# def make_cookie(name, value):
+# return cookielib.Cookie(version=0, name=name, value=value, port=None, port_specified=False, domain="xxxxx",
+# domain_specified=True, domain_initial_dot=False, path="/", path_specified=True,
+# secure=False, expires=None, discard=False, comment=None, comment_url=None, rest=None)
+#
+# jar = cookielib.CookieJar()
+# jar.set_cookie(Cookielib)
+#     jar.set_cookie(make_cookie("name", "value"))
