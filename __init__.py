@@ -1,5 +1,5 @@
 # coding:utf-8
-# from cyhHackTools.cyhNetTools.net import net
+# from cyhHackTools.NetTools.net import net
 #
 # __author__ = 'cyh'
 #
