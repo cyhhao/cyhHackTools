@@ -1,4 +1,4 @@
-__author__ = 'cyh'
+
 
 
 def split_bit(string, bit, start=0):

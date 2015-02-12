@@ -3,8 +3,6 @@ import cookielib
 import urllib
 import urllib2
 
-__author__ = 'cyh'
-
 if __name__ == '__main__':
     req = urllib2.Request(url="http://baidu.com")
     dic = {"qwe": "123", "aaa": "qadf"}
