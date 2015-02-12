@@ -1,3 +1,4 @@
+# coding:utf-8
 import cookielib
 import urllib
 import urllib2
@@ -13,36 +14,50 @@ if __name__ == '__main__':
     print req.headers
 
 
-class net():
-    User_Agent_360jisu = r"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36"
-    User_Agent_FireFox = r"Mozilla/5.0 (Windows NT 6.3; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0"
-    User_Agent_IE11 = r"Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko"
-    User_Agent_Baidu = r"Baiduspider"
-    User_Agent_Google = r"Googlebot"
-    User_Agent_Chrome = r"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1653.0 Safari/537.36"
+class UserAgent():
+    def __init__(self):
+        pass
 
-    def __init__(self, Cookie="", User_Agent=User_Agent_Chrome, headers={}):
+    jisu360 = r"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36"
+    FireFox = r"Mozilla/5.0 (Windows NT 6.3; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0"
+    IE11 = r"Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko"
+    Baidu = r"Baiduspider"
+    Google = r"Googlebot"
+    Chrome = r"Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1653.0 Safari/537.36"
+
+
+class net():
+    def __init__(self, Cookie="", User_Agent=UserAgent.Chrome, headers={}):
+        self.User_Agent = User_Agent
         self.opener = urllib2.build_opener()
         self.cj = cookielib.CookieJar()
         self.cookie = Cookie
         self.header = headers
-        self.User_Agent = User_Agent
         if Cookie != "":
-            self.header['cookie'] = Cookie
+            self.setCookie_fromStr(Cookie)
 
-
-    def __setUser_Agent(self, req, cont):
-        req.add_header("User_Agent", cont)
 
     def setHeaders(self, headers):
         self.header = headers
+
+    def getHeaders(self):
+        return self.header
+
+    # Todo: 设置cookie以字典的方式
+    def setCookie(self, ):
+        pass
+
+    def setCookie_fromStr(self, string):
+        self.header['cookie'] = string
 
     def setHeaders_fromStr(self, string):
         row = string.split('\n')
         for li in row:
             it = li.split(':')
+            print it
             self.header[it[0]] = ''.join(it[1:])
 
+        print 'end'
 
     def setHeaders_fromFile(self, path):
         string = self.__readFromFile(path)
@@ -52,6 +67,7 @@ class net():
         string = self.__readFromFile(path)
         self.cookie = string
 
+    # TODO:当cookie为False还没处理
     def Get(self, url, data={}, cookie=True, ):
         if cookie:
             self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cj))
@@ -63,6 +79,7 @@ class net():
         self.__addHeaders(req, self.header)
         self.__setUser_Agent(req, self.User_Agent)
 
+        print req.headers
         res = self.opener.open(req)
 
         return res.read()
@@ -78,6 +95,8 @@ class net():
         self.__addHeaders(req, self.header)
         self.__setUser_Agent(req, self.User_Agent)
 
+        print req.headers
+        print req.data
         res = self.opener.open(req)
 
         return res.read()
@@ -88,7 +107,11 @@ class net():
 
     def __addHeaders(self, req, header):
         for key in header:
+            #print key
             req.add_header(key, header[key])
+
+    def __setUser_Agent(self, req, cont):
+        req.add_header("User_Agent", cont)
 
 
 # def make_cookie(name, value):
@@ -98,4 +121,4 @@ class net():
 #
 # jar = cookielib.CookieJar()
 # jar.set_cookie(Cookielib)
-#     jar.set_cookie(make_cookie("name", "value"))
+# jar.set_cookie(make_cookie("name", "value"))
